@@ -1,4 +1,4 @@
-#!/usr/bin/env python3
+#!/usr/init/env python3
 """
 ====================================================================
                 🔥 SOOMRO CALL BOMBER PRO v3.1 🔥
@@ -93,7 +93,6 @@ class TelzClient:
         try:
             return self._post("app/auth_list", {"event": "auth_list"})
         except Exception:
-            # Fallback for connection reset on auth_list
             time.sleep(1)
             return self._post("app/auth_list", {"event": "auth_list"})
     
@@ -194,4 +193,4 @@ def main():
         print(f"\n{R} [!] Critical Error Encountered: {e}{RES}")
 
 if __name__ == "__main__":
-main()
+    main()
